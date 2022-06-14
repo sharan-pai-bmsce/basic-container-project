@@ -17,7 +17,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post("/movies", (req, res, next) => {
+app.post("/store-movies", (req, res, next) => {
   fs.readFile("titles.json", (err, data) => {
     if (err) {
       return res.status(500).json({ error: err.message });
@@ -59,15 +59,17 @@ app.post("/movies", (req, res, next) => {
   // });
 });
 
-app.get("/movies/:pageno", (req, res, next) => {
-  const pageNo = req.params.pageno || 1;
+app.post("/movies", (req, res, next) => {
+  const pageNo = req.body.pageno || 1;
   Movie.find()
     .skip((pageNo - 1) * 50)
     .limit(50)
     .then((data) => {
       res.status(200).json({
         message: "Success",
+        pageno: pageNo,
         data: data,
+        reqDate: req.body.date,
       });
     })
     .catch((err) => {

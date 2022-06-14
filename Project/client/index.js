@@ -2,8 +2,15 @@
 let fetchCalls = ()=>{
     let times={};
     for(let i=1;i<=70;i++){
-        times[i]=new Date();
-        fetch('http://localhost/movies/'+i)
+        // times[i]=new Date();
+        fetch('http://localhost/movies/',{
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                pageno: i,
+                date: new Date().toString()
+            })
+        })
             .then((res)=>{
                 if(res.status===500){
                     throw new Error("Some Database Error");
@@ -11,8 +18,8 @@ let fetchCalls = ()=>{
                 return res.json();
             })
             .then((data)=>{
-                times[i]=new Date()-times[i];
-                if(i===70){
+                times[data.pageno]=new Date()-new Date(data.reqDate);
+                if(data.pageno===70){
                     console.log(times);
                 }
             })
